@@ -93,6 +93,9 @@ macro_rules! wasi_listen_write_impl {
                 let (stream, _) = self.0.accept()?;
                 let mut stream = <$stream>::from_cap_std(stream);
                 stream.set_fdflags(fdflags).await?;
+                // Force set to NONBLOCK
+                let fdflags_nonblock = crate::file::FdFlags::NONBLOCK;
+                stream.set_fdflags(fdflags_nonblock).await?;
                 Ok(Box::new(stream))
             }
             async fn get_filetype(&self) -> Result<FileType, Error> {

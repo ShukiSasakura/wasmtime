@@ -312,6 +312,7 @@ impl HostTcpSocketWithStore for WasiSockets {
             let sock = get_socket(store.get().table, &socket)?;
             let stream = sock.tcp_stream_arc()?;
             let stream = Arc::clone(stream);
+            let _ = stream.set_nodelay(true);
             data.pipe(
                 store,
                 SendStreamConsumer {
